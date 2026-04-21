@@ -64,7 +64,8 @@ export async function listApps(accessToken: string, environmentId: string): Prom
     },
   });
   if (!res.ok) {
-    // Return empty on error to avoid breaking the UI
+    // Log the error but return empty array to avoid breaking the UI
+    console.error(`PowerApps API error ${res.status} for environment ${environmentId}`);
     return [];
   }
   const data = await res.json() as { value: CanvasApp[] };

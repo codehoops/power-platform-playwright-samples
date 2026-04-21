@@ -110,18 +110,19 @@ export function RecordingSession() {
     enabled: !!planId,
   });
 
-  const testCase = plan?.testCases.find(c => c.id === caseId);
+  const testCase = plan?.testCases.find(tc => tc.id === caseId);
+
+  const appUrl = plan?.appUrl ?? '';
+  const hasStarted = useRef(false);
 
   useEffect(() => {
-    if (!planId || !caseId || !plan) return;
-    const appUrl = plan.appUrl || '';
+    if (!planId || !caseId || !appUrl || hasStarted.current) return;
+    hasStarted.current = true;
 
-    let sid: string;
     api.recording.start({ planId, caseId, appUrl })
       .then(({ sessionId: newSessionId }) => {
-        sid = newSessionId;
-        setSessionId(sid);
-        const ws = new WebSocket(`ws://localhost:3001/ws/recording?sessionId=${sid}`);
+        setSessionId(newSessionId);
+        const ws = new WebSocket(`ws://localhost:3001/ws/recording?sessionId=${newSessionId}`);
         wsRef.current = ws;
         ws.onmessage = (event) => {
           try {
@@ -138,8 +139,7 @@ export function RecordingSession() {
     return () => {
       wsRef.current?.close();
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [planId, caseId]);
+  }, [planId, caseId, appUrl]);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });

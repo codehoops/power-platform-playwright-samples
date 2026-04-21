@@ -45,8 +45,8 @@ export async function initiateDeviceCodeAuth(): Promise<DeviceCodeInfo> {
   deviceCodePolling = true;
   pendingDeviceCodeResult = null;
 
-  let resolveDeviceCode: (info: DeviceCodeInfo) => void;
-  let rejectDeviceCode: (err: Error) => void;
+  let resolveDeviceCode!: (info: DeviceCodeInfo) => void;
+  let rejectDeviceCode!: (err: Error) => void;
   const deviceCodePromise = new Promise<DeviceCodeInfo>((res, rej) => {
     resolveDeviceCode = res;
     rejectDeviceCode = rej;

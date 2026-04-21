@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import React from 'react';
 import {
   makeStyles,
   tokens,
@@ -184,7 +185,7 @@ export function NewTestPlanWizard({ open, onClose, onCreated }: Props) {
   };
 
   const handleEnvSelect = async (envId: string) => {
-    const env = environments.find(e => e.id === envId);
+    const env = environments.find(environment => environment.id === envId);
     if (!env) return;
     setSelectedEnv(env);
     setLoadingApps(true);
@@ -198,7 +199,7 @@ export function NewTestPlanWizard({ open, onClose, onCreated }: Props) {
   };
 
   const handleAppSelect = (appId: string) => {
-    const app = apps.find(a => a.id === appId);
+    const app = apps.find(application => application.id === appId);
     if (!app) return;
     setSelectedApp(app);
     setPlanName(app.name);
@@ -239,10 +240,9 @@ export function NewTestPlanWizard({ open, onClose, onCreated }: Props) {
         <DialogContent>
           {/* Step indicator */}
           <div className={styles.stepIndicator}>
-            {STEP_LABELS.map((label, i) => (
-              <>
+            {STEP_LABELS.map((_label, i) => (
+              <React.Fragment key={i}>
                 <div
-                  key={`circle-${i}`}
                   className={`${styles.stepCircle} ${
                     i === step
                       ? styles.stepCircleActive
@@ -254,9 +254,9 @@ export function NewTestPlanWizard({ open, onClose, onCreated }: Props) {
                   {i < completedSteps ? <CheckmarkCircleRegular /> : i + 1}
                 </div>
                 {i < STEP_LABELS.length - 1 && (
-                  <div key={`line-${i}`} className={styles.stepLine} />
+                  <div className={styles.stepLine} />
                 )}
-              </>
+              </React.Fragment>
             ))}
           </div>
 

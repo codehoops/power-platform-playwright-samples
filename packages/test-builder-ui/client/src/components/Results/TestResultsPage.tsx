@@ -24,7 +24,6 @@ import {
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useParams, useNavigate } from 'react-router-dom';
 import { api } from '../../api/client';
-import type { RecordedStep } from '../../types';
 
 const useStyles = makeStyles({
   root: {
@@ -68,17 +67,6 @@ const useStyles = makeStyles({
   },
 });
 
-function stepTypeColor(type: RecordedStep['type']): 'brand' | 'success' | 'informative' | 'warning' | 'danger' {
-  switch (type) {
-    case 'navigate': return 'brand';
-    case 'click': return 'success';
-    case 'fill': return 'informative';
-    case 'select': return 'warning';
-    case 'assertion': return 'danger';
-    default: return 'brand';
-  }
-}
-
 export function TestResultsPage() {
   const styles = useStyles();
   const { planId, caseId } = useParams<{ planId: string; caseId: string }>();
@@ -91,7 +79,7 @@ export function TestResultsPage() {
     enabled: !!planId,
   });
 
-  const testCase = plan?.testCases.find(c => c.id === caseId);
+  const testCase = plan?.testCases.find(tc => tc.id === caseId);
 
   const rerunMutation = useMutation({
     mutationFn: () => api.testPlans.runCase(planId!, caseId!),

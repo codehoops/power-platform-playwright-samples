@@ -70,7 +70,7 @@ export function getAllTestPlans(): TestPlan[] {
 }
 
 export function getTestPlan(id: string): TestPlan | undefined {
-  return readDb().testPlans.find(p => p.id === id);
+  return readDb().testPlans.find(plan => plan.id === id);
 }
 
 export function createTestPlan(input: Omit<TestPlan, 'id' | 'createdAt' | 'testCases'>): TestPlan {
@@ -88,25 +88,25 @@ export function createTestPlan(input: Omit<TestPlan, 'id' | 'createdAt' | 'testC
 
 export function updateTestPlan(id: string, updates: Partial<Omit<TestPlan, 'id' | 'createdAt'>>): TestPlan | undefined {
   const db = readDb();
-  const idx = db.testPlans.findIndex(p => p.id === id);
-  if (idx === -1) return undefined;
-  db.testPlans[idx] = { ...db.testPlans[idx], ...updates };
+  const planIndex = db.testPlans.findIndex(plan => plan.id === id);
+  if (planIndex === -1) return undefined;
+  db.testPlans[planIndex] = { ...db.testPlans[planIndex], ...updates };
   writeDb(db);
-  return db.testPlans[idx];
+  return db.testPlans[planIndex];
 }
 
 export function deleteTestPlan(id: string): boolean {
   const db = readDb();
-  const idx = db.testPlans.findIndex(p => p.id === id);
-  if (idx === -1) return false;
-  db.testPlans.splice(idx, 1);
+  const planIndex = db.testPlans.findIndex(plan => plan.id === id);
+  if (planIndex === -1) return false;
+  db.testPlans.splice(planIndex, 1);
   writeDb(db);
   return true;
 }
 
 export function addTestCase(planId: string, input: { name: string }): TestCase | undefined {
   const db = readDb();
-  const plan = db.testPlans.find(p => p.id === planId);
+  const plan = db.testPlans.find(plan => plan.id === planId);
   if (!plan) return undefined;
   const testCase: TestCase = {
     id: uuidv4(),
@@ -123,22 +123,22 @@ export function addTestCase(planId: string, input: { name: string }): TestCase |
 
 export function updateTestCase(planId: string, caseId: string, updates: Partial<Omit<TestCase, 'id'>>): TestCase | undefined {
   const db = readDb();
-  const plan = db.testPlans.find(p => p.id === planId);
+  const plan = db.testPlans.find(plan => plan.id === planId);
   if (!plan) return undefined;
-  const caseIdx = plan.testCases.findIndex(c => c.id === caseId);
-  if (caseIdx === -1) return undefined;
-  plan.testCases[caseIdx] = { ...plan.testCases[caseIdx], ...updates };
+  const caseIndex = plan.testCases.findIndex(c => c.id === caseId);
+  if (caseIndex === -1) return undefined;
+  plan.testCases[caseIndex] = { ...plan.testCases[caseIndex], ...updates };
   writeDb(db);
-  return plan.testCases[caseIdx];
+  return plan.testCases[caseIndex];
 }
 
 export function deleteTestCase(planId: string, caseId: string): boolean {
   const db = readDb();
-  const plan = db.testPlans.find(p => p.id === planId);
+  const plan = db.testPlans.find(plan => plan.id === planId);
   if (!plan) return false;
-  const caseIdx = plan.testCases.findIndex(c => c.id === caseId);
-  if (caseIdx === -1) return false;
-  plan.testCases.splice(caseIdx, 1);
+  const caseIndex = plan.testCases.findIndex(c => c.id === caseId);
+  if (caseIndex === -1) return false;
+  plan.testCases.splice(caseIndex, 1);
   writeDb(db);
   return true;
 }

@@ -31,22 +31,22 @@ export function startRecording(
     { type: 'assertion', selector: '[data-control-name="Label1"]', description: 'Assert Label1 is visible' },
   ];
 
-  let idx = 0;
+  let currentIndex = 0;
   const steps: RecordedStep[] = [];
 
   const interval = setInterval(() => {
-    if (idx >= mockActions.length) {
+    if (currentIndex >= mockActions.length) {
       clearInterval(interval);
       return;
     }
     const step: RecordedStep = {
       id: uuidv4(),
-      ...mockActions[idx],
+      ...mockActions[currentIndex],
       timestamp: new Date().toISOString(),
     };
     steps.push(step);
     onAction(step);
-    idx++;
+    currentIndex++;
   }, 1500);
 
   activeSessions.set(sessionId, { interval, steps, appUrl });
