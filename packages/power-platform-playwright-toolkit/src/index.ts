@@ -61,3 +61,6 @@ export * from './components/model-driven';
 
 // Export GenUX Components
 export * from './components/gen-ux';
+
+// Export MDA Coverage module
+export * from './coverage';

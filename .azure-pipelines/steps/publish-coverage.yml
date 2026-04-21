@@ -1,0 +1,42 @@
+# Publishes MDA coverage HTML and LCOV reports as pipeline artifacts and
+# uploads the LCOV summary to Azure DevOps code-coverage tab.
+#
+# Usage (add after the run-playwright-tests.yml step in the NorthwindMDATests job):
+#
+#   - template: /.azure-pipelines/steps/publish-coverage.yml@self
+#     parameters:
+#       coverageOutputDir: $(COVERAGE_OUTPUT_DIR)
+
+parameters:
+  - name: coverageOutputDir
+    type: string
+    default: '$(Build.SourcesDirectory)/packages/e2e-tests/coverage-report'
+
+steps:
+  # 1. Check whether the coverage output directory was produced.
+  - pwsh: |
+      $coverageDir = "${{ parameters.coverageOutputDir }}"
+      if (Test-Path $coverageDir) {
+        Write-Host "Coverage directory found: $coverageDir"
+        Write-Host "##vso[task.setvariable variable=COVERAGE_EXISTS]true"
+      } else {
+        Write-Host "Coverage directory not found — skipping publish steps."
+        Write-Host "##vso[task.setvariable variable=COVERAGE_EXISTS]false"
+      }
+    displayName: 'Check if coverage output exists'
+    condition: succeededOrFailed()
+
+  # 2. Publish the full coverage folder (HTML + LCOV + JSON) as a pipeline artifact.
+  - task: PublishPipelineArtifact@1
+    displayName: 'Publish MDA Coverage Report artifact'
+    condition: and(succeededOrFailed(), eq(variables.COVERAGE_EXISTS, 'true'))
+    inputs:
+      targetPath: ${{ parameters.coverageOutputDir }}
+      artifact: CoverageReport-MDA
+
+  # 3. Publish LCOV to the Azure DevOps "Code Coverage" tab.
+  - task: PublishCodeCoverageResults@2
+    displayName: 'Publish LCOV to Azure DevOps (Code Coverage tab)'
+    condition: and(succeededOrFailed(), eq(variables.COVERAGE_EXISTS, 'true'))
+    inputs:
+      summaryFileLocation: '${{ parameters.coverageOutputDir }}/lcov.info'

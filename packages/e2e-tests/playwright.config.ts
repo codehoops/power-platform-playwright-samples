@@ -87,8 +87,25 @@ export default defineConfig({
           'junit',
           { outputFile: path.join(getEnvironmentConfig().outputDirectory, 'junit-results.xml') },
         ],
+        [
+          './coverage/coverage-playwright-reporter',
+          {
+            solutionPath: process.env.SOLUTION_UNPACKED_PATH,
+            outputDir: process.env.COVERAGE_OUTPUT_DIR ?? './coverage-report',
+          },
+        ],
       ]
-    : [['list'], ['html', { open: 'never' }]],
+    : [
+        ['list'],
+        ['html', { open: 'never' }],
+        [
+          './coverage/coverage-playwright-reporter',
+          {
+            solutionPath: process.env.SOLUTION_UNPACKED_PATH,
+            outputDir: process.env.COVERAGE_OUTPUT_DIR ?? './coverage-report',
+          },
+        ],
+      ],
 
   /* Shared settings for all projects */
   use: {

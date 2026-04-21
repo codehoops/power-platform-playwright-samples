@@ -60,6 +60,14 @@ variables:
   - name: CANVAS_APP_TENANT_ID
     value: '91bee3d9-0c15-4f17-8624-c92bb8b36ead'
 
+  # ── Coverage ───────────────────────────────────────────────────────────────
+  - name: COVERAGE_ENABLED
+    value: 'true'
+  - name: SOLUTION_UNPACKED_PATH
+    value: '$(Build.SourcesDirectory)/solution/unpacked'
+  - name: COVERAGE_OUTPUT_DIR
+    value: '$(Build.SourcesDirectory)/packages/e2e-tests/coverage-report'
+
 stages:
   - stage: E2ETests
     displayName: 'E2E Playwright Tests'
@@ -108,3 +116,6 @@ stages:
             parameters:
               project: model-driven-app
               artifactName: TestArtifacts-NorthwindMDA
+          - template: /.azure-pipelines/steps/publish-coverage.yml@self
+            parameters:
+              coverageOutputDir: $(COVERAGE_OUTPUT_DIR)
