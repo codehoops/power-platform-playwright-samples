@@ -44,6 +44,11 @@
       "packageName": "@power-platform-playwright/e2e-tests",
       "projectFolder": "packages/e2e-tests",
       "shouldPublish": false
+    },
+    {
+      "packageName": "@power-platform-playwright/test-builder-ui",
+      "projectFolder": "packages/test-builder-ui",
+      "shouldPublish": false
     }
   ]
 }
