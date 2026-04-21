@@ -122,14 +122,16 @@ export function RecordingSession() {
     api.recording.start({ planId, caseId, appUrl })
       .then(({ sessionId: newSessionId }) => {
         setSessionId(newSessionId);
-        const ws = new WebSocket(`ws://localhost:3001/ws/recording?sessionId=${newSessionId}`);
+        const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+        const wsUrl = `${wsProtocol}//${window.location.host}/ws/recording?sessionId=${newSessionId}`;
+        const ws = new WebSocket(wsUrl);
         wsRef.current = ws;
         ws.onmessage = (event) => {
           try {
             const step = JSON.parse(event.data as string) as RecordedStep;
             setSteps(prev => [...prev, step]);
-          } catch {
-            // ignore parse errors
+          } catch (err) {
+            console.warn('Failed to parse WebSocket message:', err);
           }
         };
         ws.onerror = (err) => console.error('WebSocket error:', err);

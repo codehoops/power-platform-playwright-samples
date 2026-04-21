@@ -82,7 +82,8 @@ testPlansRouter.post('/:id/cases/:caseId/run', async (req: Request, res: Respons
     res.status(404).json({ error: 'Test case not found' });
     return;
   }
-  // Stub: simulate running
+  // STUB: Replace with actual Playwright test runner integration.
+  // The production version should execute the recorded steps via Playwright against the live app.
   const durationMs = Math.floor(Math.random() * 3000) + 500;
   const status: 'passed' | 'failed' = Math.random() > 0.2 ? 'passed' : 'failed';
   await new Promise(r => setTimeout(r, 500)); // simulate delay

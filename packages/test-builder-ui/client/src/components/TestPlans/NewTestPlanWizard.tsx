@@ -227,7 +227,7 @@ export function NewTestPlanWizard({ open, onClose, onCreated }: Props) {
 
   const handleCopyCode = () => {
     if (deviceCodeInfo?.userCode) {
-      navigator.clipboard.writeText(deviceCodeInfo.userCode).catch(() => {});
+      navigator.clipboard.writeText(deviceCodeInfo.userCode).catch((err) => console.error('Failed to copy code:', err));
     }
   };
 

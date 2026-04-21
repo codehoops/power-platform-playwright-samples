@@ -23,6 +23,9 @@ export function startRecording(
   appUrl: string,
   onAction: (step: RecordedStep) => void,
 ): void {
+  // TODO: Replace this mock implementation with actual Playwright recorder integration.
+  // The production version should launch a browser via playwright.chromium.launch(),
+  // navigate to appUrl, attach CDP listeners, and emit real user interactions.
   const mockActions: Omit<RecordedStep, 'id' | 'timestamp'>[] = [
     { type: 'navigate', url: appUrl, description: `Navigate to ${appUrl}` },
     { type: 'click', selector: '[data-control-name="Gallery1"]', description: 'Click Gallery1' },

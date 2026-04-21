@@ -30,7 +30,7 @@ export function getMsalClient(): PublicClientApplication {
       },
       system: {
         loggerOptions: {
-          loggerCallback: () => {},
+          loggerCallback: (level, message) => { if (level === LogLevel.Error) console.error('[MSAL]', message); },
           piiLoggingEnabled: false,
           logLevel: LogLevel.Warning,
         },

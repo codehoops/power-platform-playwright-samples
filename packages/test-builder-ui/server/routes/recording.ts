@@ -1,7 +1,7 @@
 import { Router, Request, Response } from 'express';
 import { v4 as uuidv4 } from 'uuid';
 import { startRecording, stopRecording, getRecordingStatus } from '../services/recordingService';
-import { updateTestCase } from '../services/testStore';
+import { getTestPlan, updateTestCase } from '../services/testStore';
 import { broadcastAction } from '../ws/recordingSocket';
 
 export const recordingRouter = Router();
@@ -11,6 +11,16 @@ recordingRouter.post('/start', (req: Request, res: Response): void => {
     const { planId, caseId, appUrl } = req.body as { planId: string; caseId: string; appUrl: string };
     if (!planId || !caseId || !appUrl) {
       res.status(400).json({ error: 'planId, caseId, and appUrl are required' });
+      return;
+    }
+    // Validate that the plan and test case exist before starting a recording
+    const plan = getTestPlan(planId);
+    if (!plan) {
+      res.status(404).json({ error: `Test plan '${planId}' not found` });
+      return;
+    }
+    if (!plan.testCases.find((c) => c.id === caseId)) {
+      res.status(404).json({ error: `Test case '${caseId}' not found in plan '${planId}'` });
       return;
     }
     const sessionId = uuidv4();

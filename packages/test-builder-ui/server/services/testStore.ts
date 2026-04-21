@@ -55,7 +55,8 @@ function readDb(): DbData {
   try {
     const raw = fs.readFileSync(DB_FILE, 'utf-8');
     return JSON.parse(raw) as DbData;
-  } catch {
+  } catch (err) {
+    console.error('Failed to read/parse DB file:', err);
     return { testPlans: [] };
   }
 }
