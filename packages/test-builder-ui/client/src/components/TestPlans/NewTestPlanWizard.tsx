@@ -185,7 +185,7 @@ export function NewTestPlanWizard({ open, onClose, onCreated }: Props) {
   };
 
   const handleEnvSelect = async (envId: string) => {
-    const env = environments.find(environment => environment.id === envId);
+    const env = environments.find(e => e.id === envId);
     if (!env) return;
     setSelectedEnv(env);
     setLoadingApps(true);
@@ -199,7 +199,7 @@ export function NewTestPlanWizard({ open, onClose, onCreated }: Props) {
   };
 
   const handleAppSelect = (appId: string) => {
-    const app = apps.find(application => application.id === appId);
+    const app = apps.find(a => a.id === appId);
     if (!app) return;
     setSelectedApp(app);
     setPlanName(app.name);

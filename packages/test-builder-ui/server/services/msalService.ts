@@ -45,8 +45,8 @@ export async function initiateDeviceCodeAuth(): Promise<DeviceCodeInfo> {
   deviceCodePolling = true;
   pendingDeviceCodeResult = null;
 
-  let resolveDeviceCode!: (info: DeviceCodeInfo) => void;
-  let rejectDeviceCode!: (err: Error) => void;
+  let resolveDeviceCode: ((info: DeviceCodeInfo) => void) | undefined;
+  let rejectDeviceCode: ((err: Error) => void) | undefined;
   const deviceCodePromise = new Promise<DeviceCodeInfo>((res, rej) => {
     resolveDeviceCode = res;
     rejectDeviceCode = rej;
@@ -55,7 +55,7 @@ export async function initiateDeviceCodeAuth(): Promise<DeviceCodeInfo> {
   const request: DeviceCodeRequest = {
     scopes: SCOPES,
     deviceCodeCallback: (response) => {
-      resolveDeviceCode({
+      resolveDeviceCode?.({
         userCode: response.userCode,
         verificationUri: response.verificationUri,
         message: response.message,
@@ -75,7 +75,7 @@ export async function initiateDeviceCodeAuth(): Promise<DeviceCodeInfo> {
     .catch((err: unknown) => {
       deviceCodePolling = false;
       if (err instanceof Error) {
-        rejectDeviceCode(err);
+        rejectDeviceCode?.(err);
       }
     });
 

@@ -196,7 +196,6 @@ export function RecordingSession() {
               <div key={step.id} className={styles.actionRow}>
                 <Tag
                   appearance="filled"
-                  // @ts-expect-error color prop accepts string values not in type
                   color={actionTypeColor(step.type)}
                   size="small"
                 >

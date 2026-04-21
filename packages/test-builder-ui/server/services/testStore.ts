@@ -70,7 +70,7 @@ export function getAllTestPlans(): TestPlan[] {
 }
 
 export function getTestPlan(id: string): TestPlan | undefined {
-  return readDb().testPlans.find(plan => plan.id === id);
+  return readDb().testPlans.find(p => p.id === id);
 }
 
 export function createTestPlan(input: Omit<TestPlan, 'id' | 'createdAt' | 'testCases'>): TestPlan {
@@ -88,7 +88,7 @@ export function createTestPlan(input: Omit<TestPlan, 'id' | 'createdAt' | 'testC
 
 export function updateTestPlan(id: string, updates: Partial<Omit<TestPlan, 'id' | 'createdAt'>>): TestPlan | undefined {
   const db = readDb();
-  const planIndex = db.testPlans.findIndex(plan => plan.id === id);
+  const planIndex = db.testPlans.findIndex(p => p.id === id);
   if (planIndex === -1) return undefined;
   db.testPlans[planIndex] = { ...db.testPlans[planIndex], ...updates };
   writeDb(db);
@@ -97,7 +97,7 @@ export function updateTestPlan(id: string, updates: Partial<Omit<TestPlan, 'id' 
 
 export function deleteTestPlan(id: string): boolean {
   const db = readDb();
-  const planIndex = db.testPlans.findIndex(plan => plan.id === id);
+  const planIndex = db.testPlans.findIndex(p => p.id === id);
   if (planIndex === -1) return false;
   db.testPlans.splice(planIndex, 1);
   writeDb(db);
@@ -106,7 +106,7 @@ export function deleteTestPlan(id: string): boolean {
 
 export function addTestCase(planId: string, input: { name: string }): TestCase | undefined {
   const db = readDb();
-  const plan = db.testPlans.find(plan => plan.id === planId);
+  const plan = db.testPlans.find(p => p.id === planId);
   if (!plan) return undefined;
   const testCase: TestCase = {
     id: uuidv4(),
@@ -123,7 +123,7 @@ export function addTestCase(planId: string, input: { name: string }): TestCase |
 
 export function updateTestCase(planId: string, caseId: string, updates: Partial<Omit<TestCase, 'id'>>): TestCase | undefined {
   const db = readDb();
-  const plan = db.testPlans.find(plan => plan.id === planId);
+  const plan = db.testPlans.find(p => p.id === planId);
   if (!plan) return undefined;
   const caseIndex = plan.testCases.findIndex(c => c.id === caseId);
   if (caseIndex === -1) return undefined;
@@ -134,7 +134,7 @@ export function updateTestCase(planId: string, caseId: string, updates: Partial<
 
 export function deleteTestCase(planId: string, caseId: string): boolean {
   const db = readDb();
-  const plan = db.testPlans.find(plan => plan.id === planId);
+  const plan = db.testPlans.find(p => p.id === planId);
   if (!plan) return false;
   const caseIndex = plan.testCases.findIndex(c => c.id === caseId);
   if (caseIndex === -1) return false;

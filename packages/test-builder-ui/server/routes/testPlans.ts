@@ -77,7 +77,7 @@ testPlansRouter.post('/:id/cases/:caseId/run', async (req: Request, res: Respons
     res.status(404).json({ error: 'Test plan not found' });
     return;
   }
-  const testCase = plan.testCases.find(tc => tc.id === req.params.caseId);
+  const testCase = plan.testCases.find(c => c.id === req.params.caseId);
   if (!testCase) {
     res.status(404).json({ error: 'Test case not found' });
     return;
