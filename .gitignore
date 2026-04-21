@@ -15,6 +15,10 @@ lib-cov
 # Coverage directory used by tools like istanbul
 coverage
 
+# Except source code directories named coverage (toolkit module + e2e-tests integration)
+!packages/power-platform-playwright-toolkit/src/coverage/
+!packages/e2e-tests/coverage/
+
 # nyc test coverage
 .nyc_output
 
@@ -93,6 +97,9 @@ packages/e2e-tests/.envcopy
 packages/e2e-tests/test-results*/
 packages/e2e-tests/playwright-report/
 packages/e2e-tests/.playwright-test-results/
+
+# Coverage reports (generated output — not source)
+packages/e2e-tests/coverage-report/
 
 # Certificates (never push to source control)
 cert/
