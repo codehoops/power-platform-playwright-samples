@@ -61,6 +61,11 @@ variables:
     value: '91bee3d9-0c15-4f17-8624-c92bb8b36ead'
 
   # ── Coverage ───────────────────────────────────────────────────────────────
+  # These variables enable MDA JS web-resource and form-structure coverage.
+  # SOLUTION_UNPACKED_PATH must point to a directory produced by running
+  # `pac solution unpack --zipfile <solution>.zip --folder solution/unpacked`
+  # before the test job starts. If the directory does not exist at runtime
+  # the coverage module logs a warning and tests run normally without coverage.
   - name: COVERAGE_ENABLED
     value: 'true'
   - name: SOLUTION_UNPACKED_PATH

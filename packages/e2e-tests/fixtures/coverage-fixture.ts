@@ -52,7 +52,6 @@ type CoverageFixtures = {
  * for every test without requiring explicit use in the test body.
  */
 export const test = base.extend<CoverageFixtures>({
-  // eslint-disable-next-line no-empty-pattern
   _mdaCoverage: [
     async ({ page }, use, testInfo) => {
       if (!COVERAGE_ENABLED || !SOLUTION_UNPACKED_PATH) {
