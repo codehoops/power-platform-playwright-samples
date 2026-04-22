@@ -593,3 +593,62 @@ rush build --to power-platform-playwright-toolkit
 ```
 
 Forgetting this is the most common source of "my fix didn't work" confusion.
+
+---
+
+## Context Engineering — Generating Tests from Unpacked Solutions
+
+When asked to generate Playwright tests for a Power Platform solution (provided as an
+unpacked folder from `pac solution unpack`), use the files in `docs/context-engineering/`.
+
+### Directory Structure
+
+```
+docs/context-engineering/
+├── README.md                                      # Overview and quick-start
+├── instructions/
+│   ├── 00-unpacked-solution-overview.md           # File tree, XML schema, namespace notes
+│   ├── 01-mda-form-testing.md                     # FormXml → toolkit API mapping
+│   ├── 02-mda-javascript-testing.md               # JS event handlers → test strategy
+│   └── 03-mda-business-rules-testing.md           # Business Rule XML → test strategy
+└── skills/
+    ├── analyze-solution-structure.prompt.md       # Parse solution → JSON manifest
+    ├── generate-mda-form-tests.prompt.md          # Manifest → <entity>-form.test.ts
+    ├── generate-javascript-tests.prompt.md        # Manifest → <webresource>-events.test.ts
+    └── generate-business-rule-tests.prompt.md     # Manifest → <entity>-business-rules.test.ts
+```
+
+### When to Use Each File
+
+| Task | File(s) to read |
+|---|---|
+| Understand unpacked solution layout | `instructions/00-unpacked-solution-overview.md` |
+| Generate tests for an MDA form | `instructions/01-mda-form-testing.md` + `skills/generate-mda-form-tests.prompt.md` |
+| Generate tests for a JS event handler | `instructions/02-mda-javascript-testing.md` + `skills/generate-javascript-tests.prompt.md` |
+| Generate tests for Business Rules | `instructions/03-mda-business-rules-testing.md` + `skills/generate-business-rule-tests.prompt.md` |
+| Parse a solution folder first | `skills/analyze-solution-structure.prompt.md` |
+
+### Mandatory Code Generation Rules
+
+All code generated from these skills must follow the same flakiness-prevention rules
+documented in **Known Flakiness Patterns** above:
+
+1. **Never `page.locator()` / `page.fill()` on Dataverse form fields** — use
+   `executeInFormContext`, `getEntityAttribute`, `setEntityAttribute`.
+2. **`page.waitForFunction(fn, undefined, { timeout })` — options MUST be third arg.**
+3. **Grid row count: `[role="row"][row-index]` only** — not plain `[role="row"]`.
+4. **`beforeEach` must use the 5-row editable-record scan** — inactive records have no
+   Xrm attribute bindings.
+5. **`test.describe.serial`** — not `test.describe` — for all MDA test suites.
+
+### Recommended Workflow
+
+```
+1. Run analyze-solution-structure  →  produces manifest.json
+2a. Run generate-mda-form-tests    →  <entity>-form.test.ts
+2b. Run generate-javascript-tests  →  <webresource>-events.test.ts
+2c. Run generate-business-rule-tests → <entity>-business-rules.test.ts
+```
+
+Always run `analyze-solution-structure` first — the other skills consume its manifest
+instead of parsing XML inline, which keeps prompts short and deterministic.

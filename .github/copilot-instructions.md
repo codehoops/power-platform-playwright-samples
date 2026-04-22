@@ -135,6 +135,54 @@ npx playwright test --ui                    # interactive UI mode
 
 ---
 
+## Context Engineering — Generating Tests from Unpacked Solutions
+
+When a user asks you to generate Playwright tests from an unpacked Power Platform
+solution, use the files in `docs/context-engineering/`.
+
+### What's in `docs/context-engineering/`
+
+| Path | Purpose |
+|---|---|
+| `instructions/00-unpacked-solution-overview.md` | Unpacked solution file tree, XML schema, namespace notes |
+| `instructions/01-mda-form-testing.md` | FormXml → toolkit API mapping for form tests |
+| `instructions/02-mda-javascript-testing.md` | JS web resource event handlers → test strategy |
+| `instructions/03-mda-business-rules-testing.md` | Business Rule XML → condition/action tests |
+| `skills/analyze-solution-structure.prompt.md` | Step-by-step: parse solution folder → JSON manifest |
+| `skills/generate-mda-form-tests.prompt.md` | Step-by-step: manifest → `<entity>-form.test.ts` |
+| `skills/generate-javascript-tests.prompt.md` | Step-by-step: manifest → `<webresource>-events.test.ts` |
+| `skills/generate-business-rule-tests.prompt.md` | Step-by-step: manifest → `<entity>-business-rules.test.ts` |
+
+### When to Use Each File
+
+- **User asks about unpacked solution layout or XML schema** → reference
+  `instructions/00-unpacked-solution-overview.md`
+- **User asks how to test an MDA form** → reference
+  `instructions/01-mda-form-testing.md`
+- **User asks how to test a JS event handler** → reference
+  `instructions/02-mda-javascript-testing.md`
+- **User asks how to test a Business Rule** → reference
+  `instructions/03-mda-business-rules-testing.md`
+- **User wants to generate a test file from an unpacked solution** → run
+  `skills/analyze-solution-structure.prompt.md` first, then the appropriate
+  `skills/generate-*.prompt.md`
+
+### Mandatory Rules When Generating Code from These Skills
+
+1. **Never use `page.locator()` or `page.fill()` directly on Dataverse form fields** —
+   all Xrm interactions go through `executeInFormContext`, `getEntityAttribute`, or
+   `setEntityAttribute`.
+2. **Always pass `undefined` as the second arg and `{ timeout }` as the third arg to
+   `page.waitForFunction`** — the wrong arg order silently ignores the timeout.
+3. **Always use `[role="row"][row-index]` for grid row counts** — plain
+   `[role="row"]` includes header rows and gives -1 on empty grids.
+4. **Always use the 5-row editable-record scan in `beforeEach`** — inactive records
+   have no Xrm attribute bindings and tests will silently fail without this guard.
+5. **Always use `test.describe.serial`** — MDA tests share browser state and must run
+   sequentially.
+
+---
+
 ## Customer Setup Checklist
 
 When helping a customer set up this project for their environment:
